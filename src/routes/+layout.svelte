@@ -4,6 +4,17 @@
   let { children } = $props();
 </script>
 
+<svelte:head>
+  <title>Grow a Business</title>
+  <meta name="description" content="A business simulator game" />
+
+  <meta property="og:title" content="Grow a Business" />
+  <meta property="og:description" content="A business simulator game" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://grow-a.biz" />
+  <meta property="og:image" content="https://grow-a.biz/favicon.svg" />
+</svelte:head>
+
 <div class="min-w-screen min-h-screen bg-background text-text" id="layout">
   <div
     class="w-screen h-[5vh] border-b-2 text-xl flex items-center justify-start gap-12 p-4"
