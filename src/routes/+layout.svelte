@@ -13,6 +13,12 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://grow-a.biz" />
   <meta property="og:image" content="https://grow-a.biz/favicon.svg" />
+  <meta
+    property="og:image:secure_url"
+    content="https://grow-a.biz/favicon.svg"
+  />
+  <meta property="og:image:alt" content="Grow a Business Logo" />
+  <meta property="og:image:type" content="image/svg+xml" />
 </svelte:head>
 
 <div class="min-w-screen min-h-screen bg-background text-text" id="layout">

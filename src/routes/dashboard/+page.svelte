@@ -1,98 +1,41 @@
 <script lang="ts">
-  import convert_to_readable from "$lib/utils/readable";
-  import { darken } from "$lib/utils/colors";
-
-  import { Chart } from "svelte-echarts";
-  import { init, use } from "echarts/core";
-  import { LineChart } from "echarts/charts";
-  import { GridComponent, TitleComponent } from "echarts/components";
-  import { SVGRenderer } from "echarts/renderers";
-  import type { EChartsOption } from "echarts";
-
+  import Market from "$lib/components/Market.svelte";
+  import NetWorth from "$lib/components/NetWorth.svelte";
+  import NetWorthGraph from "$lib/components/NetWorthGraph.svelte";
   import NewsArticle from "$lib/components/NewsArticle.svelte";
-
-  import { onMount } from "svelte";
-
-  use([LineChart, GridComponent, SVGRenderer, TitleComponent]);
-
-  let options: EChartsOption = {};
-
-  onMount(() => {
-    const accent = getComputedStyle(document.documentElement).getPropertyValue(
-      "--color-accent",
-    );
-
-    const text = getComputedStyle(document.documentElement).getPropertyValue(
-      "--color-text",
-    );
-
-    options = {
-      title: {
-        text: "Weekly Change in Net Worth",
-        left: "center",
-        textStyle: {
-          color: text,
-        },
-      },
-      xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        min: 0,
-        max: 6,
-        axisLabel: {
-          color: text,
-        },
-        axisLine: {
-          lineStyle: {
-            color: text,
-          },
-        },
-        boundaryGap: false,
-      },
-      yAxis: {
-        type: "value",
-        axisLabel: {
-          color: text,
-        },
-        axisLine: {
-          lineStyle: {
-            color: text,
-          },
-        },
-      },
-      series: [
-        {
-          type: "line",
-          data: [
-            [0, 12],
-            [1, 90],
-            [2, 8],
-            [3, 45],
-            [4, 30],
-            [5, 15],
-            [6, 20],
-          ],
-          lineStyle: {
-            width: 4,
-            color: accent,
-          },
-          itemStyle: {
-            color: darken(accent, 100),
-            borderJoin: "round",
-            borderWidth: 8,
-          },
-          clip: false,
-          symbolSize: 10,
-          symbol: "circle",
-        },
-      ],
-    };
-  });
+  import Assets from "$lib/components/Assets.svelte";
 
   const net_worth = 2.5e7;
   const liquid_cash = 5e6;
   const debt = 1e6;
   const change_percent = 2.5;
+
+  const net_worth_graph = [
+    // constantly fluctuating graph
+    // completely unpredictable
+    { date: "2023-01-01", value: 2.4e7 },
+    { date: "2023-02-01", value: 1.9e7 },
+    { date: "2023-03-01", value: 2.1e7 },
+    { date: "2023-04-01", value: 2.3e7 },
+    { date: "2023-05-01", value: 2.5e7 },
+    { date: "2023-06-01", value: 2.4e7 },
+    { date: "2023-07-01", value: 2.6e7 },
+    { date: "2023-08-01", value: 2.8e7 },
+    { date: "2023-09-01", value: 2.7e7 },
+    { date: "2023-10-01", value: 2.9e7 },
+    { date: "2023-11-01", value: 2.5e7 },
+    { date: "2023-12-01", value: 2.6e7 },
+    { date: "2024-01-01", value: 2.8e7 },
+    { date: "2024-02-01", value: 2.9e7 },
+    { date: "2024-03-01", value: 3.0e7 },
+    { date: "2024-04-01", value: 3.1e7 },
+    { date: "2024-05-01", value: 3.0e7 },
+    { date: "2024-06-01", value: 3.2e7 },
+    { date: "2024-07-01", value: 3.1e7 },
+    { date: "2024-08-01", value: 3.0e7 },
+    { date: "2024-09-01", value: 3.1e7 },
+    { date: "2024-10-01", value: 3.0e7 },
+  ];
 
   const articles = [
     {
@@ -126,49 +69,46 @@
         "The cryptocurrency market remains volatile, with significant price fluctuations in major coins like Bitcoin and Ethereum.",
     },
   ];
+
+  function generateChartData() {
+    let chartData = [];
+    let firstDate = new Date();
+    firstDate.setDate(firstDate.getDate() - 2000);
+    firstDate.setHours(0, 0, 0, 0);
+    let value = 1200;
+    for (var i = 0; i < 100; i++) {
+      let newDate = new Date(firstDate);
+      newDate.setDate(newDate.getDate() + i);
+
+      value += Math.round((Math.random() < 0.5 ? 1 : -1) * Math.random() * 10);
+      let open = value + Math.round(Math.random() * 16 - 8);
+      let close = value + Math.round(Math.random() * 16 - 8);
+      let low = Math.min(value, open) - Math.round(Math.random() * 5);
+      let high = Math.max(value, open) + Math.round(Math.random() * 5);
+
+      chartData.push({
+        date: newDate.toISOString().split("T")[0],
+        value: value,
+        open: open,
+        close: close,
+        low: low,
+        high: high,
+      });
+    }
+    return chartData;
+  }
+
+  let market_data = generateChartData();
 </script>
 
 <div
   class="h-[95vh] min-w-screen grid grid-cols-5 grid-rows-5 gap-4 p-4 *:rounded-lg *:border-2 *:border-secondary"
 >
   <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
-    <div class="text-center">
-      <h2 class="text-subtext-bright">Net Worth</h2>
-      <h1 class="text-6xl font-bold text-accent">
-        ₹{convert_to_readable(net_worth)}
-      </h1>
-    </div>
-    <div
-      class="flex flex-row w-full justify-around gap-2 *:text-center p-2 mt-2"
-    >
-      <div>
-        <h2 class="text-subtext-bright">Liquid Cash</h2>
-        <h3 class="text-2xl font-bold text-accent">
-          ₹{convert_to_readable(liquid_cash)}
-        </h3>
-      </div>
-      <div>
-        <h2 class="text-subtext-bright">Debt</h2>
-        <h3 class="text-2xl font-bold text-accent">
-          ₹{convert_to_readable(debt)}
-        </h3>
-      </div>
-    </div>
-    <h2
-      class:text-green={change_percent > 0}
-      class:text-red={change_percent < 0}
-      class="text-2xl font-bold"
-    >
-      {change_percent}%
-      {#if change_percent > 0}
-        <span>▲</span>
-      {:else}
-        <span>▼</span>
-      {/if}
-    </h2>
+    <NetWorth {net_worth} {liquid_cash} {debt} {change_percent} />
   </div>
   <div class="col-span-3 row-span-2 pt-4">
-    <Chart {init} {options} />
+    <NetWorthGraph data={net_worth_graph} />
   </div>
   <div class="col-span-1 row-span-3 p-2 flex flex-col">
     <h1 class="font-bold text-3xl text-center py-4">News</h1>
@@ -178,7 +118,11 @@
       {/each}
     </div>
   </div>
+  <div class="col-span-2 row-span-3 pt-4">
+    <Market data={market_data} />
+  </div>
   <div class="col-span-2 row-span-3"></div>
-  <div class="col-span-2 row-span-3"></div>
-  <div class="col-span-1 row-span-2"></div>
+  <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
+    <Assets count={5} category_count={3} />
+  </div>
 </div>
