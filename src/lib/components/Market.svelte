@@ -46,6 +46,7 @@
         left: "center",
         textStyle: {
           color: text,
+          fontFamily: "Space Grotesk",
         },
       },
       xAxis: {
@@ -58,23 +59,26 @@
             return `${date.getDate()}/${date.getMonth() + 1}`;
           },
           interval: 10,
+          fontFamily: "Space Grotesk",
         },
         axisLine: { lineStyle: { color: text } },
         axisPointer: {
           label: {
             backgroundColor: accent,
+            fontFamily: "Space Grotesk",
           },
         },
       },
       yAxis: {
         type: "value",
-        axisLabel: { color: text },
+        axisLabel: { color: text, fontFamily: "Space Grotesk" },
         axisLine: { lineStyle: { color: text } },
         // min: 1100,
         // max: 1250,
         axisPointer: {
           label: {
             backgroundColor: accent,
+            fontFamily: "Space Grotesk",
           },
           value: 1200,
         },
@@ -99,6 +103,7 @@
         backgroundColor: "rgba(0,0,0,0.7)",
         textStyle: {
           color: text,
+          fontFamily: "Space Grotesk",
         },
       },
       toolbox: {

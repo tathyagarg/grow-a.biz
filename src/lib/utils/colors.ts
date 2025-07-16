@@ -5,6 +5,5 @@ export function darken(color: string, amount: number): string {
   const b = Math.max((num & 0x0000FF) - amount, 0);
 
   const result = `#${(r << 16 | g << 8 | b).toString(16).padStart(6, '0')}`;
-  console.log(`Darkened color: ${result} from ${color} by ${amount}`);
   return result;
 }

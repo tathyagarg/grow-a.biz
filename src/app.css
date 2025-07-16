@@ -33,3 +33,7 @@
   --color-surface: #585b70;
 }
 
+body {
+  @apply font-[Space_Grotesk]
+}
+

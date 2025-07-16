@@ -38,6 +38,7 @@
         left: "center",
         textStyle: {
           color: text,
+          fontFamily: "Space Grotesk",
         },
       },
       xAxis: {
@@ -46,10 +47,10 @@
         axisLabel: {
           color: text,
           formatter: (value: string) => {
-            console.log(value);
             const date = new Date(value);
             return `${date.getDate()}/${date.getMonth() + 1}`;
           },
+          fontFamily: "Space Grotesk",
         },
         axisLine: {
           lineStyle: {
@@ -62,6 +63,7 @@
         type: "value",
         axisLabel: {
           color: text,
+          fontFamily: "Space Grotesk",
         },
         axisLine: {
           lineStyle: {
@@ -95,6 +97,7 @@
         backgroundColor: "rgba(0, 0, 0, 0.7)",
         textStyle: {
           color: text,
+          fontFamily: "Space Grotesk",
         },
       },
       toolbox: {

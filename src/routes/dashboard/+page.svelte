@@ -4,38 +4,31 @@
   import NetWorthGraph from "$lib/components/NetWorthGraph.svelte";
   import NewsArticle from "$lib/components/NewsArticle.svelte";
   import Assets from "$lib/components/Assets.svelte";
+  import Npcvalues from "$lib/components/NPCEmotions.svelte";
 
-  const net_worth = 2.5e7;
-  const liquid_cash = 5e6;
-  const debt = 1e6;
-  const change_percent = 2.5;
+  let { data } = $props();
 
-  const net_worth_graph = [
-    // constantly fluctuating graph
-    // completely unpredictable
-    { date: "2023-01-01", value: 2.4e7 },
-    { date: "2023-02-01", value: 1.9e7 },
-    { date: "2023-03-01", value: 2.1e7 },
-    { date: "2023-04-01", value: 2.3e7 },
-    { date: "2023-05-01", value: 2.5e7 },
-    { date: "2023-06-01", value: 2.4e7 },
-    { date: "2023-07-01", value: 2.6e7 },
-    { date: "2023-08-01", value: 2.8e7 },
-    { date: "2023-09-01", value: 2.7e7 },
-    { date: "2023-10-01", value: 2.9e7 },
-    { date: "2023-11-01", value: 2.5e7 },
-    { date: "2023-12-01", value: 2.6e7 },
-    { date: "2024-01-01", value: 2.8e7 },
-    { date: "2024-02-01", value: 2.9e7 },
-    { date: "2024-03-01", value: 3.0e7 },
-    { date: "2024-04-01", value: 3.1e7 },
-    { date: "2024-05-01", value: 3.0e7 },
-    { date: "2024-06-01", value: 3.2e7 },
-    { date: "2024-07-01", value: 3.1e7 },
-    { date: "2024-08-01", value: 3.0e7 },
-    { date: "2024-09-01", value: 3.1e7 },
-    { date: "2024-10-01", value: 3.0e7 },
-  ];
+  console.log("Data received:", data);
+
+  const net_worth = data.user.netWorth;
+  const liquid_cash = data.user.liquidCash;
+  const debt = data.user.debt;
+  const change_percent =
+    ((data.historicalData.netWorth[0].value -
+      data.historicalData.netWorth[1].value) /
+      data.historicalData.netWorth[1].value) *
+    100;
+
+  const net_worth_graph = data.historicalData.netWorth
+    .map((item) => ({
+      date: item.timestamp.toLocaleTimeString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      value: item.value,
+    }))
+    .reverse();
 
   const articles = [
     {
@@ -99,6 +92,14 @@
   }
 
   let market_data = generateChartData();
+
+  let npc_data = [
+    { name: "Ali", value: 75 },
+    { name: "Bob", value: 50 },
+    { name: "Bab", value: 25 },
+    { name: "Dia", value: 90 },
+    { name: "Eth", value: 60 },
+  ];
 </script>
 
 <div
@@ -121,7 +122,9 @@
   <div class="col-span-2 row-span-3 pt-4">
     <Market data={market_data} />
   </div>
-  <div class="col-span-2 row-span-3"></div>
+  <div class="col-span-2 row-span-3">
+    <Npcvalues {npc_data} />
+  </div>
   <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
     <Assets count={5} category_count={3} />
   </div>
