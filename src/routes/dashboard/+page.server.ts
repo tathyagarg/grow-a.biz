@@ -71,12 +71,12 @@ export const load: PageServerLoad = async () => {
       liquidCash: historicalLiquidCash[0] ? historicalLiquidCash[0].value : 0,
       debt: historicalDebt[0] ? historicalDebt[0].value : 0,
     },
-    historical_data: {
+    historicalData: {
       netWorth: historicalNetWorth,
       liquidCash: historicalLiquidCash,
       debt: historicalDebt
     },
     assets: assetData,
-    npc_data: npc_data
+    npcData: npc_data
   };
 }
