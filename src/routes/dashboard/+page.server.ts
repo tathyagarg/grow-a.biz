@@ -57,6 +57,11 @@ export const load: PageServerLoad = async () => {
 
   const npcData = await db.query.npcData.findMany({
     where: (npc, { eq }) => eq(npc.userId, userId),
+    columns: {
+      id: false,
+      userId: false,
+      description: false,
+    }
   });
 
   return {

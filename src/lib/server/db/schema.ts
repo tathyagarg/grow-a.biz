@@ -77,7 +77,7 @@ export const npcType = pgEnum('npc_type', [
 ]);
 
 export const npcData = pgTable('npcData', {
-  id: text('id').primaryKey(),
+  id: serial('id').primaryKey(),
   userId: text('user_id').notNull().references(() => user.id),
 
   name: text('name').notNull(),

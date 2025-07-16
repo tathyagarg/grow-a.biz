@@ -132,13 +132,10 @@
 
   let marketData = generateChartData();
 
-  let npcData = [
-    { name: "Ali", value: 75 },
-    { name: "Bob", value: 50 },
-    { name: "Bab", value: 25 },
-    { name: "Dia", value: 90 },
-    { name: "Eth", value: 60 },
-  ];
+  let npcData = data.npcData.flatMap((npc) => ({
+    name: npc.name,
+    value: npc.value,
+  }));
 </script>
 
 <div
