@@ -14,7 +14,7 @@ export const historicalDataType = pgEnum('historical_data_type', [
   'asset_quantity'
 ]);
 
-export const historicalData = pgTable('historicalData', {
+export const historical_data = pgTable('historical_data', {
   id: serial('id').primaryKey(),
   userId: text('user_id').notNull().references(() => user.id),
 
@@ -76,7 +76,7 @@ export const npcType = pgEnum('npc_type', [
   'rival'
 ]);
 
-export const npcData = pgTable('npcData', {
+export const npc_data = pgTable('npc_data', {
   id: serial('id').primaryKey(),
   userId: text('user_id').notNull().references(() => user.id),
 
@@ -91,11 +91,11 @@ export type Session = typeof session.$inferSelect;
 
 export type User = typeof user.$inferSelect;
 
-export type HistoricalData = typeof historicalData.$inferSelect;
+export type HistoricalData = typeof historical_data.$inferSelect;
 
 export type Asset = typeof asset.$inferSelect;
 
-export type NpcData = typeof npcData.$inferSelect;
+export type NpcData = typeof npc_data.$inferSelect;
 
 export type HistoricalDataType = typeof historicalDataType.enumValues;
 
