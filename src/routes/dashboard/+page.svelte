@@ -14,11 +14,14 @@
   const netWorth = data.user.netWorth;
   const liquidCash = data.user.liquidCash;
   const debt = data.user.debt;
+
+  const currentNetWorth = data.user.netWorth;
+  const previousNetWorth = data.historicalData.netWorth[1]
+    ? data.historicalData.netWorth[1].value
+    : currentNetWorth;
+
   const changePercent =
-    ((data.historicalData.netWorth[0].value -
-      data.historicalData.netWorth[1].value) /
-      data.historicalData.netWorth[1].value) *
-    100;
+    ((currentNetWorth - previousNetWorth) / previousNetWorth) * 100;
 
   const netWorthGraph = data.historicalData.netWorth
     .map((item) => ({

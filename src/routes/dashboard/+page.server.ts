@@ -62,9 +62,9 @@ export const load: PageServerLoad = async () => {
   return {
     user: {
       id: user_data?.id,
-      netWorth: historicalNetWorth[0].value,
-      liquidCash: historicalLiquidCash[0].value,
-      debt: historicalDebt[0].value || 0,
+      netWorth: historicalNetWorth[0] ? historicalNetWorth[0].value : 0,
+      liquidCash: historicalLiquidCash[0] ? historicalLiquidCash[0].value : 0,
+      debt: historicalDebt[0] ? historicalDebt[0].value : 0,
     },
     historicalData: {
       netWorth: historicalNetWorth,
