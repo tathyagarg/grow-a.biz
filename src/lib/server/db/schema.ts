@@ -30,12 +30,11 @@ export const session = pgTable('session', {
 });
 
 export const assetType = pgEnum('asset_type', [
-  'stock',
-  'bond',
-  'real_estate',
-  'cryptocurrency',
-  'commodity',
-  'other'
+  'physical',
+  'liquid',
+  'investment',
+  'informal',
+  'protective'
 ]);
 
 export const sector = pgEnum('sector', [
@@ -54,7 +53,7 @@ export const sector = pgEnum('sector', [
 ])
 
 export const asset = pgTable('asset', {
-  id: text('id').primaryKey(),
+  id: serial('id').primaryKey(),
   userId: text('user_id').notNull().references(() => user.id),
   name: text('name').notNull(),
 

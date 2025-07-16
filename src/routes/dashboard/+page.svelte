@@ -1,7 +1,7 @@
 <script lang="ts">
   import Market from "$lib/components/Market.svelte";
   import NetWorth from "$lib/components/NetWorth.svelte";
-  import NetWorthGraph from "$lib/components/NetWorthGraph.svelte";
+  import NetWorthGraph from "$lib/components/NetWorthGraph/NetWorthGraph.svelte";
   import NewsArticle from "$lib/components/NewsArticle.svelte";
   import Assets from "$lib/components/Assets.svelte";
   import Npcvalues from "$lib/components/NPCEmotions.svelte";
@@ -9,17 +9,18 @@
   let { data } = $props();
 
   console.log("Data received:", data);
+  console.log("Historical Data:", data.historicalData);
 
-  const net_worth = data.user.netWorth;
-  const liquid_cash = data.user.liquidCash;
+  const netWorth = data.user.netWorth;
+  const liquidCash = data.user.liquidCash;
   const debt = data.user.debt;
-  const change_percent =
+  const changePercent =
     ((data.historicalData.netWorth[0].value -
       data.historicalData.netWorth[1].value) /
       data.historicalData.netWorth[1].value) *
     100;
 
-  const net_worth_graph = data.historicalData.netWorth
+  const netWorthGraph = data.historicalData.netWorth
     .map((item) => ({
       date: item.timestamp.toLocaleTimeString("en-US", {
         year: "numeric",
@@ -29,6 +30,41 @@
       value: item.value,
     }))
     .reverse();
+
+  const liquidCashGraph = data.historicalData.liquidCash
+    .map((item) => ({
+      date: item.timestamp.toLocaleTimeString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      value: item.value,
+    }))
+    .reverse();
+
+  const debtGraph = data.historicalData.debt
+    .map((item) => ({
+      date: item.timestamp.toLocaleTimeString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      value: item.value,
+    }))
+    .reverse();
+
+  const assetCount = data.assets.length;
+  const assetSectorCount = Object.keys(
+    data.assets.reduce(
+      (acc, asset) => {
+        acc[asset.sector ?? ""] = true;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    ),
+  ).length;
+
+  console.log("Asset sector Count:", assetSectorCount);
 
   const articles = [
     {
@@ -91,9 +127,9 @@
     return chartData;
   }
 
-  let market_data = generateChartData();
+  let marketData = generateChartData();
 
-  let npc_data = [
+  let npcData = [
     { name: "Ali", value: 75 },
     { name: "Bob", value: 50 },
     { name: "Bab", value: 25 },
@@ -106,10 +142,10 @@
   class="h-[95vh] min-w-screen grid grid-cols-5 grid-rows-5 gap-4 p-4 *:rounded-lg *:border-2 *:border-secondary"
 >
   <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
-    <NetWorth {net_worth} {liquid_cash} {debt} {change_percent} />
+    <NetWorth {netWorth} {liquidCash} {debt} {changePercent} />
   </div>
-  <div class="col-span-3 row-span-2 pt-4">
-    <NetWorthGraph data={net_worth_graph} />
+  <div class="col-span-3 row-span-2">
+    <NetWorthGraph {netWorthGraph} {liquidCashGraph} {debtGraph} />
   </div>
   <div class="col-span-1 row-span-3 p-2 flex flex-col">
     <h1 class="font-bold text-3xl text-center py-4">News</h1>
@@ -120,12 +156,12 @@
     </div>
   </div>
   <div class="col-span-2 row-span-3 pt-4">
-    <Market data={market_data} />
+    <Market data={marketData} />
   </div>
   <div class="col-span-2 row-span-3">
-    <Npcvalues {npc_data} />
+    <Npcvalues {npcData} />
   </div>
   <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
-    <Assets count={5} category_count={3} />
+    <Assets count={assetCount} sectorCount={assetSectorCount} />
   </div>
 </div>

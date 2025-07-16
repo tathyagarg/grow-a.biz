@@ -13,6 +13,7 @@
   import type { EChartsOption } from "echarts";
 
   import { onMount } from "svelte";
+  import { darken } from "$lib/utils/colors";
 
   let options: EChartsOption = {};
 
@@ -39,6 +40,13 @@
     const green = getComputedStyle(document.documentElement).getPropertyValue(
       "--color-green",
     );
+
+    const secondary = getComputedStyle(
+      document.documentElement,
+    ).getPropertyValue("--color-secondary");
+
+    const minimum_value = Math.min(...data.map((d) => d.low));
+    const maximum_value = Math.max(...data.map((d) => d.high));
 
     options = {
       title: {
@@ -73,8 +81,8 @@
         type: "value",
         axisLabel: { color: text, fontFamily: "Space Grotesk" },
         axisLine: { lineStyle: { color: text } },
-        // min: 1100,
-        // max: 1250,
+        min: () => minimum_value - 25,
+        max: () => maximum_value + 25,
         axisPointer: {
           label: {
             backgroundColor: accent,
@@ -121,6 +129,14 @@
         {
           type: "slider",
           xAxisIndex: [0],
+          show: true,
+          backgroundColor: "transparent",
+          borderColor: "transparent",
+          fillerColor: `${darken(secondary, 50)}80`,
+          handleStyle: {
+            color: secondary,
+            borderColor: darken(secondary, 50),
+          },
         },
       ],
     };

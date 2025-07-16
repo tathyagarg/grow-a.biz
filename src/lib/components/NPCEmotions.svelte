@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let npc_data: { name: string; value: number }[];
+  export let npcData: { name: string; value: number }[];
 
   import { Chart } from "svelte-echarts";
   import { init, use } from "echarts/core";
@@ -48,7 +48,7 @@
             type: "group",
             // top: "center",
             left: "center",
-            children: npc_data.flatMap(({ name, value }, i) => ({
+            children: npcData.flatMap(({ name, value }, i) => ({
               type: "group",
               left: 100 * i,
               children: [

@@ -19,21 +19,40 @@ export const load: PageServerLoad = async () => {
   const historicalNetWorth = await db.query.historicalData.findMany({
     where: (historicalData, { eq, and }) => and(eq(historicalData.userId, userId), eq(historicalData.type, 'net_worth')),
     orderBy: (historicalData, { desc }) => desc(historicalData.timestamp),
+    columns: {
+      id: false,
+      userId: false,
+      type: false,
+    }
   });
 
   const historicalLiquidCash = await db.query.historicalData.findMany({
     where: (historicalData, { eq, and }) => and(eq(historicalData.userId, userId), eq(historicalData.type, 'liquid_cash')),
     orderBy: (historicalData, { desc }) => desc(historicalData.timestamp),
+    columns: {
+      id: false,
+      userId: false,
+      type: false,
+    }
   });
 
   const historicalDebt = await db.query.historicalData.findMany({
     where: (historicalData, { eq, and }) => and(eq(historicalData.userId, userId), eq(historicalData.type, 'debt')),
     orderBy: (historicalData, { desc }) => desc(historicalData.timestamp),
+    columns: {
+      id: false,
+      userId: false,
+      type: false,
+    }
   });
 
   const assetData = await db.query.asset.findMany({
     where: (asset, { eq }) => eq(asset.userId, userId),
     orderBy: (asset, { desc }) => desc(asset.acquiredAt),
+    columns: {
+      id: false,
+      userId: false,
+    }
   });
 
   const npcData = await db.query.npcData.findMany({
@@ -52,7 +71,7 @@ export const load: PageServerLoad = async () => {
       liquidCash: historicalLiquidCash,
       debt: historicalDebt
     },
-    assetData: assetData,
+    assets: assetData,
     npcData: npcData
   };
 }

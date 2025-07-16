@@ -23,7 +23,7 @@
 
 <div class="min-w-screen min-h-screen bg-background text-text" id="layout">
   <div
-    class="w-screen h-[5vh] border-b-2 text-xl flex items-center justify-start gap-12 p-4"
+    class="w-screen h-[5vh] border-b-2 text-xl flex items-center justify-start gap-12 p-4 bg-background"
   >
     <a href="/dashboard">Home</a>
     <a href="/businesses">Businesses</a>
