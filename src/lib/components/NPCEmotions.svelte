@@ -109,4 +109,6 @@
   });
 </script>
 
-<Chart {init} {options} />
+<div class="h-full w-full">
+  <Chart {init} {options} />
+</div>

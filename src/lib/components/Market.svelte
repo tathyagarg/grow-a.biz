@@ -81,8 +81,8 @@
         type: "value",
         axisLabel: { color: text, fontFamily: "Space Grotesk" },
         axisLine: { lineStyle: { color: text } },
-        min: () => minimum_value - 25,
-        max: () => maximum_value + 25,
+        min: () => minimum_value * 0.95,
+        max: () => maximum_value * 1.05,
         axisPointer: {
           label: {
             backgroundColor: accent,

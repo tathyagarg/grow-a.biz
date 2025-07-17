@@ -36,6 +36,8 @@
   let debtGraph: LineGraphData = props.debtGraph || [];
 
   let data: LineGraphData = $state(netWorthGraph);
+  let min: number = $derived(Math.min(...data.map((d) => d.value)));
+  let max: number = $derived(Math.max(...data.map((d) => d.value)));
 
   let current = $state("Net Worth");
 
@@ -81,6 +83,8 @@
           color: text,
         },
       },
+      min: () => min * 0.95,
+      max: () => max * 1.05,
     },
     series: [
       {
