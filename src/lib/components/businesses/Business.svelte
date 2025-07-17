@@ -10,6 +10,8 @@
     requirement: 0,
   };
 
+  export let handle_click: (id: number) => void = () => {};
+
   const { can_buy_this, requirement } = can_buy;
 </script>
 
@@ -37,11 +39,12 @@
     </div>
 
     {#if locked && can_buy_this}
-      <div
+      <button
         class="h-28 w-64 bg-text border-4 border-background text-background rounded-lg absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] font-bold text-2xl flex items-center justify-center cursor-pointer"
+        on:click={() => handle_click(id)}
       >
         Buy!
-      </div>
+      </button>
     {:else if locked}
       <div
         class="h-28 w-64 bg-text border-4 border-background text-background rounded-lg absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] font-bold text-2xl flex items-center justify-center cursor-not-allowed flex-col"

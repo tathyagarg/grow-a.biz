@@ -1,8 +1,9 @@
 import { db } from '$lib/server/db';
-import { redirect } from '@sveltejs/kit';
+import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getRequestEvent } from '$app/server';
-import type { BusinessData } from '$lib/types/business';
+import type { BusinessData, BusinessSector } from '$lib/types/business';
+import { business } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = async () => {
   const { locals } = getRequestEvent();
@@ -19,7 +20,7 @@ export const load: PageServerLoad = async () => {
 
   const businesses = await db.query.business.findMany({
     where: (business, { eq }) => eq(business.userId, userId),
-    orderBy: (business, { desc }) => desc(business.createdAt),
+    orderBy: (business, { asc }) => asc(business.userBusinessId),
     columns: {
       userId: false,
     }
@@ -67,7 +68,7 @@ export const load: PageServerLoad = async () => {
       seen_sectors[business.sector] = totalRevenue;
       business.sectorRevenue = totalRevenue;
     } else {
-
+      business.sectorRevenue = seen_sectors[business.sector] || null;
     }
   }
 
@@ -79,4 +80,46 @@ export const load: PageServerLoad = async () => {
     },
     businesses: businessesWithData,
   };
+}
+
+export const actions: Actions = {
+  default: async ({ request, locals }) => {
+    console.log('Action triggered');
+
+    if (!locals.user) {
+      throw redirect(302, '/auth/login');
+    }
+
+    const formData = await request.formData();
+
+    const name = formData.get('name')?.toString() || '';
+    const sector = formData.get('sector')?.toString() || '';
+
+    const userBusinessId: number = (Number(formData.get('business_id')) || 0) + 1;
+
+    formData.forEach((value, key) => {
+      console.log(`Form Data - Key: ${key}, Value: ${value}`);
+    });
+
+    if (!userBusinessId) {
+      return { error: 'Business ID is required.' };
+    }
+
+    if (!name) {
+      return { error: 'Business name is required.' };
+    }
+
+    if (!sector || !['technology', 'healthcare', 'finance', 'consumer_discretionary', 'consumer_staples', 'energy', 'utilities', 'materials', 'industrials', 'real_estate', 'telecommunications', 'other'].includes(sector)) {
+      return { error: 'Invalid or missing business sector.' };
+    }
+
+    const newBusiness = await db.insert(business).values({
+      userId: locals.user.id,
+      userBusinessId,
+      name,
+      sector: sector as BusinessSector,
+    });
+
+    return { success: true, business: newBusiness };
+  }
 }
