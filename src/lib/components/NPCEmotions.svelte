@@ -11,7 +11,7 @@
   import { SVGRenderer } from "echarts/renderers";
   import type { EChartsOption } from "echarts";
 
-  import { onMount } from "svelte";
+  import { onMount, tick } from "svelte";
 
   let options: EChartsOption = {};
 
@@ -19,7 +19,7 @@
 
   const bar_height = 400;
 
-  onMount(() => {
+  onMount(async () => {
     const text = getComputedStyle(document.documentElement).getPropertyValue(
       "--color-text",
     );
@@ -28,13 +28,19 @@
       "--color-accent",
     );
 
-    const top_offset = 75;
+    await tick();
+
+    const top_offset = 50;
+
+    const container = document.getElementById("emotion-parent");
+    const height = container?.clientHeight || 500;
+    const scale = height / (bar_height + top_offset);
 
     options = {
       title: {
         text: "NPC Emotions",
         left: "center",
-        top: 20,
+        top: top_offset - 50,
         textStyle: {
           color: text,
           fontSize: 40,
@@ -46,8 +52,9 @@
         elements: [
           {
             type: "group",
-            // top: "center",
             left: "center",
+            scaleX: scale,
+            scaleY: height / (bar_height + top_offset * 2.5),
             children: npcData.flatMap(({ name, value }, i) => ({
               type: "group",
               left: 100 * i,
@@ -109,6 +116,6 @@
   });
 </script>
 
-<div class="h-full w-full">
+<div class="h-full w-full" id="emotion-parent">
   <Chart {init} {options} />
 </div>
