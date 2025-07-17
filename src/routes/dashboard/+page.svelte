@@ -1,10 +1,11 @@
 <script lang="ts">
-  import Market from "$lib/components/Market.svelte";
-  import NetWorth from "$lib/components/NetWorth.svelte";
-  import NetWorthGraph from "$lib/components/NetWorthGraph/NetWorthGraph.svelte";
-  import NewsArticle from "$lib/components/NewsArticle.svelte";
-  import Assets from "$lib/components/Assets.svelte";
-  import Npcvalues from "$lib/components/NPCEmotions.svelte";
+  import Market from "$lib/components/dashboard/Market.svelte";
+  import NetWorth from "$lib/components/dashboard/NetWorth.svelte";
+  import NetWorthGraph from "$lib/components/dashboard/NetWorthGraph/NetWorthGraph.svelte";
+  import NewsArticle from "$lib/components/dashboard/NewsArticle.svelte";
+  import Assets from "$lib/components/dashboard/Assets.svelte";
+  import NPCEmotions from "$lib/components/dashboard/NPCEmotions.svelte";
+  import type { LineGraphNode, LineGraphNodeRaw } from "$lib/types/graph";
 
   let { data } = $props();
 
@@ -15,23 +16,25 @@
   const liquidCash = data.user.liquidCash;
   const debt = data.user.debt;
 
-  const currentNetWorth = data.user.netWorth;
-  const previousNetWorth = data.historicalData.netWorth[1]
+  const currentNetWorth: number = data.user.netWorth;
+  const previousNetWorth: number = data.historicalData.netWorth[1]
     ? data.historicalData.netWorth[1].value
     : currentNetWorth;
 
   const changePercent =
     ((currentNetWorth - previousNetWorth) / previousNetWorth) * 100;
 
-  const netWorthGraph = data.historicalData.netWorth
-    .map((item) => ({
-      date: item.timestamp.toLocaleTimeString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
+  const netWorthGraph: LineGraphNode[] = data.historicalData.netWorth
+    .map(
+      (item: LineGraphNodeRaw): LineGraphNode => ({
+        date: item.timestamp.toLocaleTimeString("en-US", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }) as string,
+        value: item.value,
       }),
-      value: item.value,
-    }))
+    )
     .reverse();
 
   const liquidCashGraph = data.historicalData.liquidCash
@@ -134,7 +137,7 @@
 
   let npcData = data.npcData.flatMap((npc) => ({
     name: npc.name,
-    value: npc.value,
+    value: npc.feelings,
   }));
 </script>
 
@@ -159,7 +162,7 @@
     <Market data={marketData} />
   </div>
   <div class="col-span-2 row-span-3">
-    <Npcvalues {npcData} />
+    <NPCEmotions {npcData} />
   </div>
   <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
     <Assets count={assetCount} sectorCount={assetSectorCount} />

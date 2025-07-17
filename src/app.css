@@ -27,8 +27,18 @@
   --color-secondary: #89b4fa;
   --color-accent: #cba6f7;
 
-  --color-green: #a6e3a1;
   --color-red: #f38ba8;
+  --color-green: #a6e3a1;
+  --color-blue: #89b4fa;
+  --color-yellow: #f9e2af;
+  --color-orange: #fab387;
+
+  --color-red-locked:    #8a2e45;  /* much darker red */
+--color-green-locked:  #397d49;  /* much darker green */
+--color-blue-locked:   #2b4c87;  /* much darker blue */
+--color-yellow-locked: #a07a17;  /* much darker yellow */
+--color-orange-locked: #8a3e11;  /* much darker orange */
+
 
   --color-surface: #585b70;
 }

@@ -83,8 +83,8 @@
           color: text,
         },
       },
-      min: () => min * 0.95,
-      max: () => max * 1.05,
+      min: () => Math.round(min * 0.95),
+      max: () => Math.round(max * 1.05),
     },
     series: [
       {

@@ -28,6 +28,18 @@
       "--color-accent",
     );
 
+    const green = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-green",
+    );
+
+    const red = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-red",
+    );
+
+    const yellow = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-yellow",
+    );
+
     await tick();
 
     const top_offset = 50;
@@ -99,7 +111,7 @@
                   type: "text",
                   style: {
                     text: `${value}%`,
-                    fill: text,
+                    fill: value > 75 ? green : value < 25 ? red : yellow,
                     fontSize: 20,
                     textAlign: "center",
                     fontFamily: "Space Grotesk",

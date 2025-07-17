@@ -11,7 +11,7 @@
     type="radio"
     name="datasource"
     id={label}
-    class="peer absolute h-full w-full cursor-pointer appearance-none rounded-md border-2 border-secondary"
+    class="peer absolute h-full w-full cursor-pointer appearance-none rounded-md"
     on:change={callback}
     checked={label === "Net Worth"}
   />
