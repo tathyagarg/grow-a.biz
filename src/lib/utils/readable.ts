@@ -32,8 +32,20 @@ const EXPENSES: Record<string, string> = {
   distributionCost: 'Distribution',
 }
 
+const RAW_EXPENSES: Record<string, string> = {
+  rawMaterials: 'Raw Materials',
+  labor: 'Labor',
+  overhead: 'Overhead',
+  marketing: 'Marketing',
+  distribution: 'Distribution',
+};
+
 export function readableExpense(name: string): string {
   return EXPENSES[name] || name.replace(/([A-Z])/g, ' $1').trim();
+}
+
+export function readableRawExpense(name: string): string {
+  return RAW_EXPENSES[name] || name.replace(/([A-Z])/g, ' $1').trim();
 }
 
 export function readableSector(sector: BusinessSector): string {

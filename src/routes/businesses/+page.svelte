@@ -37,73 +37,77 @@
   {/each}
   {#if selected_business}
     <div
-      class="h-1/3 w-1/3 absolute bg-text top-1/2 left-1/2 translate-[-50%] shadow-2xl rounded-lg text-2xl text-background border-4 border-secondary"
+      class="w-full h-full absolute top-0 left-0 flex justify-center items-center bg-background/50 backdrop-blur-sm"
     >
-      <form
-        class="flex flex-col justify-center h-full w-full gap-4 px-[16.67%]"
-        method="POST"
+      <div
+        class="h-1/3 w-1/3 absolute bg-text top-1/2 left-1/2 translate-[-50%] shadow-2xl rounded-lg text-2xl text-background border-4 border-secondary"
       >
-        <h2 class="text-2xl font-bold text-center">Create New Business</h2>
-        <div class="">
-          <label for="name" class="block text-sm font-medium mb-2"
-            >Business Name</label
-          >
-          <input
-            type="text"
-            id="name"
-            name="name"
-            class="w-full p-2 border-2 border-background rounded-md focus:outline-none focus:ring-2 focus:ring-blue"
-            placeholder="Enter business name"
-            required
-          />
-        </div>
-        <div class="">
-          <label for="sector" class="block text-sm font-medium mb-2">
-            Sector
-          </label>
-          <select
-            id="sector"
-            name="sector"
-            class="w-full p-2 border-2 border-background rounded-md focus:outline-none focus:ring-2 focus:ring-blue"
-            required
-          >
-            <option value="" disabled selected>Select a sector</option>
-            <option value="technology">Technology</option>
-            <option value="healthcare">Healthcare</option>
-            <option value="finance">Finance</option>
-            <option value="consumer_discretionary"
-              >Consumer Discretionary</option
+        <form
+          class="flex flex-col justify-center h-full w-full gap-4 px-[16.67%]"
+          method="POST"
+        >
+          <h2 class="text-2xl font-bold text-center">Create New Business</h2>
+          <div class="">
+            <label for="name" class="block text-sm font-medium mb-2"
+              >Business Name</label
             >
-            <option value="consumer_staples">Consumer Staples</option>
-            <option value="energy">Energy</option>
-            <option value="utilities">Utilities</option>
-            <option value="materials">Materials</option>
-            <option value="industrials">Industrials</option>
-            <option value="real_estate">Real Estate</option>
-            <option value="telecommunications">Telecommunications</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="flex flex-row gap-2">
-          <div class="flex-1">
-            <button
-              type="submit"
-              class="w-full bg-blue text-white p-2 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              Create Business!
-            </button>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="w-full p-2 border-2 border-background rounded-md focus:outline-none focus:ring-2 focus:ring-blue"
+              placeholder="Enter business name"
+              required
+            />
           </div>
-          <div class="flex-1">
-            <button
-              type="button"
-              class="w-full bg-red text-white p-2 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              onclick={() => (selected_business = null)}
+          <div class="">
+            <label for="sector" class="block text-sm font-medium mb-2">
+              Sector
+            </label>
+            <select
+              id="sector"
+              name="sector"
+              class="w-full p-2 border-2 border-background rounded-md focus:outline-none focus:ring-2 focus:ring-blue"
+              required
             >
-              Nevermind
-            </button>
+              <option value="" disabled selected>Select a sector</option>
+              <option value="technology">Technology</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="finance">Finance</option>
+              <option value="consumer_discretionary"
+                >Consumer Discretionary</option
+              >
+              <option value="consumer_staples">Consumer Staples</option>
+              <option value="energy">Energy</option>
+              <option value="utilities">Utilities</option>
+              <option value="materials">Materials</option>
+              <option value="industrials">Industrials</option>
+              <option value="real_estate">Real Estate</option>
+              <option value="telecommunications">Telecommunications</option>
+              <option value="other">Other</option>
+            </select>
           </div>
-        </div>
-      </form>
+          <div class="flex flex-row gap-2">
+            <div class="flex-1">
+              <button
+                type="submit"
+                class="w-full bg-blue text-white p-2 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                Create Business!
+              </button>
+            </div>
+            <div class="flex-1">
+              <button
+                type="button"
+                class="w-full bg-red text-white p-2 rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                onclick={() => (selected_business = null)}
+              >
+                Nevermind
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   {/if}
 </div>

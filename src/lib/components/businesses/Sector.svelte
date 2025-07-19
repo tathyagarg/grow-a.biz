@@ -1,7 +1,6 @@
 <script lang="ts">
   import Widget from "$lib/components/Widget.svelte";
   import type { BusinessSector } from "$lib/types/business";
-  import { readableSector } from "$lib/utils/readable";
 
   export let sector: BusinessSector;
 

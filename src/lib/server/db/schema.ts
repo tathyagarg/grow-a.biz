@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, serial, integer, text, timestamp, bigint } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, serial, integer, text, timestamp, bigint, real } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -105,6 +105,7 @@ export const business = pgTable('business', {
 
   sector: sector('sector').notNull(),
   credit_worthiness: integer('credit_worthiness').notNull().default(0), // 0-100 scale
+  owned_stake: real('owned_stake').notNull().default(100.0),
 
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 });

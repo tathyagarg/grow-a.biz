@@ -1,5 +1,6 @@
 <script lang="ts">
   import "../app.css";
+  import "$lib/stores/gameloop";
 
   let { children } = $props();
 </script>

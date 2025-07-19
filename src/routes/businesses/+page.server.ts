@@ -83,8 +83,6 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
-    console.log('Action triggered');
-
     if (!locals.user) {
       throw redirect(302, '/auth/login');
     }
@@ -149,15 +147,10 @@ export const actions: Actions = {
     }
 
 
-    console.log("Businesses with data:", businessesWithData);
     const userBusinessId = businesses.length + 1;
     if (!canBuy(userBusinessId, businessesWithData).can_buy_this) {
       return { error: 'You cannot buy more businesses at this time.' };
     }
-
-    formData.forEach((value, key) => {
-      console.log(`Form Data - Key: ${key}, Value: ${value}`);
-    });
 
     if (!userBusinessId) {
       return { error: 'Business ID is required.' };

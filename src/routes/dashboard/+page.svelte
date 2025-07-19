@@ -9,9 +9,6 @@
 
   let { data } = $props();
 
-  console.log("Data received:", data);
-  console.log("Historical Data:", data.historicalData);
-
   const netWorth = data.user.netWorth;
   const liquidCash = data.user.liquidCash;
   const debt = data.user.debt;
@@ -69,8 +66,6 @@
       {} as Record<string, boolean>,
     ),
   ).length;
-
-  console.log("Asset sector Count:", assetSectorCount);
 
   const articles = [
     {

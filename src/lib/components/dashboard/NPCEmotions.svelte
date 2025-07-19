@@ -3,11 +3,7 @@
 
   import { Chart } from "svelte-echarts";
   import { init, use } from "echarts/core";
-  import {
-    GraphicComponent,
-    TitleComponent,
-    TooltipComponent,
-  } from "echarts/components";
+  import { TitleComponent, TooltipComponent } from "echarts/components";
   import { SVGRenderer } from "echarts/renderers";
   import type { EChartsOption } from "echarts";
 
@@ -18,15 +14,9 @@
 
   use([TitleComponent, TooltipComponent, SVGRenderer, BarChart]);
 
-  const bar_height = 400;
-
   onMount(async () => {
     const text = getComputedStyle(document.documentElement).getPropertyValue(
       "--color-text",
-    );
-
-    const accent = getComputedStyle(document.documentElement).getPropertyValue(
-      "--color-accent",
     );
 
     const green = getComputedStyle(document.documentElement).getPropertyValue(
@@ -44,6 +34,16 @@
     await tick();
 
     options = {
+      title: {
+        text: "NPC Emotions",
+        top: 10,
+        left: "center",
+        textStyle: {
+          color: text,
+          fontFamily: "Space Grotesk",
+          fontSize: 32,
+        },
+      },
       xAxis: {
         type: "category",
         data: npcData.map((npc) => npc.name),
@@ -82,8 +82,6 @@
       tooltip: {
         trigger: "item",
         formatter: (params: any) => {
-          console.log(params);
-
           const data = params.data as number;
           return `${params.name}: ${data}%`;
         },

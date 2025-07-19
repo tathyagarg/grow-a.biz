@@ -9,18 +9,22 @@
   import { readableExpense } from "$lib/utils/readable";
   import type { PopulatedProduct } from "$lib/types/product";
 
-  // export let productData: PopulatedProduct;
-
   let { productData }: { productData: PopulatedProduct } = $props();
 
   let red: string = $state("");
   let darkRed: string = $state("");
   let green: string = $state("");
+  let darkGreen: string = $state("");
+
   let background: string = $state("");
 
   let options: EChartsOption = $derived(updateOptions(productData));
 
   function updateOptions(productData: PopulatedProduct): EChartsOption {
+    if (!productData) {
+      return {};
+    }
+
     return {
       series: [
         {
@@ -44,14 +48,14 @@
                   itemStyle: {
                     color: mix(
                       green,
-                      red,
+                      darkGreen,
                       (productData.price - productData.expenses.totalCost) /
                         productData.price,
                     ),
                     borderColor: darken(
                       mix(
                         green,
-                        red,
+                        darkGreen,
                         (productData.price - productData.expenses.totalCost) /
                           productData.price,
                       ),
@@ -83,7 +87,7 @@
                         borderColor: darken(
                           mix(
                             green,
-                            red,
+                            darkGreen,
                             (productData.price -
                               productData.expenses.totalCost) /
                               productData.price,
@@ -179,11 +183,6 @@
     };
   }
 
-  $effect(() => {
-    console.log("options changed", options);
-    console.log("productData changed", productData);
-  });
-
   onMount(() => {
     red = getComputedStyle(document.documentElement).getPropertyValue(
       "--color-red",
@@ -197,17 +196,14 @@
       "--color-green",
     );
 
-    console.log(
-      Object.entries(productData.expenses).map(([category, value]) => ({
-        name: category,
-        value: value as number,
-      })),
+    darkGreen = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-green-locked",
     );
   });
 
   use([TreemapChart, SVGRenderer]);
 </script>
 
-<div class="overflow-hidden h-full w-full">
+<div class="overflow-hidden h-full w-full col-span-3 row-span-3">
   <Chart {init} {options} />
 </div>
