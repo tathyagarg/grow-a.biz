@@ -16,16 +16,16 @@ export const historicalDataType = pgEnum('historical_data_type', [
 
 export const historical_data = pgTable('historical_data', {
   id: serial('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => user.id),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
 
   type: historicalDataType('type').notNull(),
   value: integer('value').notNull(),
-  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).notNull(),
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 });
 
 export const session = pgTable('session', {
   id: text('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => user.id),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull()
 });
 
@@ -54,7 +54,7 @@ export const sector = pgEnum('sector', [
 
 export const asset = pgTable('asset', {
   id: serial('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => user.id),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
 
   value: integer('value').notNull(),
@@ -82,7 +82,7 @@ export const npcType = pgEnum('npc_type', [
 
 export const npc_data = pgTable('npc_data', {
   id: serial('id').primaryKey(),
-  userId: text('user_id').notNull().references(() => user.id),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
 
   name: text('name').notNull(),
 
@@ -97,8 +97,8 @@ export const business = pgTable('business', {
 
   userBusinessId: integer('user_business_id').notNull(), // Unique ID for the business within the user's context
 
-  userId: text('user_id').references(() => user.id),
-  npcId: integer('npc_id').references(() => npc_data.id),  // in case of NPC-owned businesses
+  userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
+  npcId: integer('npc_id').references(() => npc_data.id, { onDelete: 'cascade' }),  // in case of NPC-owned businesses
 
   name: text('name').notNull(),
   description: text('description'),
@@ -125,24 +125,53 @@ export const productCategory = pgEnum('product_category', [
 
 export const product = pgTable('product', {
   id: serial('id').primaryKey(),
-  businessId: integer('business_id').notNull().references(() => business.id),
+  businessId: integer('business_id').notNull().references(() => business.id, { onDelete: 'cascade' }),
 
   name: text('name').notNull(),
   description: text('description'),
 
   category: productCategory('category').notNull(),
 
-  price: integer('price').notNull(), // selling price
-
-  rawMaterialsCost: integer('raw_materials_cost').notNull(),
-  laborCost: integer('labor_cost').notNull(),
-  overheadCost: integer('overhead_cost').notNull(),
-  marketingCost: integer('marketing_cost').notNull(),
-  distributionCost: integer('distribution_cost').notNull(),
-
   createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+});
 
-  availableStock: integer('available_stock').notNull(), // quantity available for sale
+export const product_historical_data = pgTable('product_historical_data', {
+  id: serial('id').primaryKey(),
+  productId: integer('product_id').notNull().references(() => product.id, { onDelete: 'cascade' }),
+
+  price: integer('price').notNull().default(0),
+
+  rawMaterialsCost: integer('raw_materials_cost').notNull().default(0),
+  laborCost: integer('labor_cost').notNull().default(0),
+  overheadCost: integer('overhead_cost').notNull().default(0),
+  marketingCost: integer('marketing_cost').notNull().default(0),
+  distributionCost: integer('distribution_cost').notNull().default(0),
+
+  availableStock: integer('available_stock').notNull().default(0),
+
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+});
+
+export const product_historical_revenue = pgTable('product_historical_revenue', {
+  id: serial('id').primaryKey(),
+  productId: integer('product_id').notNull().references(() => product.id, { onDelete: 'cascade' }),
+
+  revenue: integer('revenue').notNull().default(0),
+  quantitySold: integer('quantity_sold').notNull().default(0),
+
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+});
+
+export const product_historical_stats = pgTable('product_historical_stats', {
+  id: serial('id').primaryKey(),
+  productId: integer('product_id').notNull().references(() => product.id, { onDelete: 'cascade' }),
+
+  packaging: integer('packaging').notNull().default(0), // 0-100 scale
+  quality: integer('quality').notNull().default(0), // 0-100 scale
+  design: integer('design').notNull().default(0), // 0-100 scale
+  easeOfUse: integer('ease_of_use').notNull().default(0), // 0-100 scale
+
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 });
 
 export const businessHistoricalDataType = pgEnum('business_historical_data_type', [
@@ -154,7 +183,7 @@ export const businessHistoricalDataType = pgEnum('business_historical_data_type'
 
 export const business_historical_data = pgTable('business_historical_data', {
   id: serial('id').primaryKey(),
-  businessId: integer('business_id').notNull().references(() => business.id),
+  businessId: integer('business_id').notNull().references(() => business.id, { onDelete: 'cascade' }),
 
   type: businessHistoricalDataType('type').notNull(),
   value: bigint({ mode: 'bigint' }).notNull(),
@@ -163,7 +192,7 @@ export const business_historical_data = pgTable('business_historical_data', {
 
 export const loans = pgTable('loans', {
   id: serial('id').primaryKey(),
-  businessId: integer('business_id').notNull().references(() => business.id),
+  businessId: integer('business_id').notNull().references(() => business.id, { onDelete: 'cascade' }),
 
   amount: integer('amount').notNull(),
   interestRate: integer('interest_rate').notNull(),
@@ -176,7 +205,7 @@ export const loans = pgTable('loans', {
 
 export const loanPayments = pgTable('loan_payments', {
   id: serial('id').primaryKey(),
-  loanId: integer('loan_id').notNull().references(() => loans.id),
+  loanId: integer('loan_id').notNull().references(() => loans.id, { onDelete: 'cascade' }),
 
   paymentDate: timestamp('payment_date', { withTimezone: true, mode: 'date' }).notNull(),
   amount: integer('amount').notNull(),
@@ -184,7 +213,7 @@ export const loanPayments = pgTable('loan_payments', {
 
 export const employee = pgTable('employee', {
   id: serial('id').primaryKey(),
-  businessId: integer('business_id').notNull().references(() => business.id),
+  businessId: integer('business_id').notNull().references(() => business.id, { onDelete: 'cascade' }),
 
   name: text('name').notNull(),
   position: text('position').notNull(),

@@ -27,8 +27,12 @@
   );
   let name: string = $state(data.name);
 
-  let background: string = $state("");
-  let text: string = $state("");
+  let red: string = $state("");
+  let green: string = $state("");
+  let blue: string = $state("");
+  let orange: string = $state("");
+  let purple: string = $state("");
+  let yellow: string = $state("");
 
   function updateOptions(thisBusiness: any, competitors: any): EChartsOption {
     return {
@@ -87,6 +91,7 @@
           ],
         },
       ],
+      color: [yellow, green, red, blue, orange, purple],
     };
   }
 
@@ -95,12 +100,28 @@
   );
 
   onMount(() => {
-    background = getComputedStyle(document.documentElement).getPropertyValue(
-      "--background",
+    red = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-red",
     );
 
-    text = getComputedStyle(document.documentElement).getPropertyValue(
-      "--text",
+    green = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-green",
+    );
+
+    blue = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-blue",
+    );
+
+    orange = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-orange",
+    );
+
+    purple = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-purple",
+    );
+
+    yellow = getComputedStyle(document.documentElement).getPropertyValue(
+      "--color-yellow",
     );
 
     updateOptions(thisBusinessRevenue, competitorRevenues);

@@ -28,7 +28,7 @@
   >
     <a href="/dashboard">Home</a>
     <a href="/businesses">Businesses</a>
-    <a href="/invest">Invest</a>
+    <a href="/marketplace">Marketplace</a>
   </div>
   {@render children()}
 </div>

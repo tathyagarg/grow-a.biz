@@ -6,14 +6,11 @@ export type PopulatedProduct = {
   name: string;
   description: string | null;
   category: ProductCategory;
-  price: number; // selling price
-  rawMaterialsCost: number;
-  laborCost: number;
-  overheadCost: number;
-  marketingCost: number;
-  distributionCost: number;
+
   createdAt: Date;
-  availableStock: number; // quantity available for sale
+
+  availableStock: number;
+
   expenses: {
     rawMaterialsCost: number;
     laborCost: number;

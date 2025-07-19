@@ -11,7 +11,7 @@
   import { convert_to_readable, readableRawExpense } from "$lib/utils/readable";
   import blueprints from "$lib/utils/blueprints";
 
-  let { data } = $props();
+  let { data, form } = $props();
   let { products, business, competitorBusinesses } = data;
 
   let productIndex = $state(products[0]?.id || -1);
@@ -86,9 +86,12 @@
         value={`₹${product?.price || "0"}`}
         className="p-2 col-start-4 row-start-2"
       />
-      <div class="flex-1 col-start-4 row-start-3">
-        <Widget label="" value="Distribution Channels" className="p-2" />
-      </div>
+      <a
+        class="flex-1 col-start-4 row-start-3 cursor-pointer"
+        href={`/businesses/${business.userBusinessId}/products/${product.id}`}
+      >
+        <Widget label="" value="Product Information" className="p-2" />
+      </a>
     </div>
   </div>
   <button
@@ -144,12 +147,21 @@
           use:enhance={async ({ formData }) => {
             formData.append("business_id", business.id?.toString() || "");
 
-            return async () => {
-              window.location.reload();
+            return async ({ result, update }) => {
+              if (result?.type === "success") {
+                window.location.reload();
+              } else {
+                update({ form: result?.error || "An error occurred." });
+              }
             };
           }}
         >
           <h1 class="text-4xl font-bold mb-4">Create New Product</h1>
+          {#if form?.error}
+            <div class="text-red-500 mb-4">
+              {form?.error || "An error occurred while creating the product."}
+            </div>
+          {/if}
           <div class="w-full mb-4">
             <label for="product_name" class="block text-sm font-medium mb-2">
               Product Name
@@ -194,9 +206,11 @@
             Product Blueprint
           </label>
           <div class="w-full! flex flex-row items-center justify-center mb-4">
-            <div class="flex flex-wrap gap-4">
+            <div
+              class="w-full flex flex-wrap gap-4 items-center justify-center"
+            >
               {#each currentBlueprints as blueprint}
-                <label class="flex items-center cursor-pointer">
+                <label class="flex items-center cursor-pointer w-1/3">
                   <input
                     type="radio"
                     name="blueprint"
@@ -205,20 +219,20 @@
                     required
                   />
                   <div
-                    class="peer-checked:border-blue-500 peer-checked:border-4 p-4 border-2 border-secondary bg-text rounded-md flex gap-4"
+                    class="peer-checked:border-blue-500 peer-checked:border-4 p-4 border-2 border-secondary bg-text rounded-md flex gap-4 w-full"
                   >
-                    {#if blueprint.image.type === "image"}
-                      <img
-                        src={blueprint.image.src}
-                        alt={blueprint.name}
-                        class="w-24 h-24 object-cover rounded-md"
-                      />
-                    {:else if blueprint.image.type === "emoji"}
-                      <span class="text-5xl">{blueprint.image.emoji}</span>
-                    {:else}
-                      <span class="text-sm">{blueprint.name}</span>
-                    {/if}
                     <div>
+                      {#if blueprint.image.type === "image"}
+                        <img
+                          src={blueprint.image.src}
+                          alt={blueprint.name}
+                          class="w-24 h-24 object-cover rounded-md"
+                        />
+                      {:else if blueprint.image.type === "emoji"}
+                        <span class="text-5xl">{blueprint.image.emoji}</span>
+                      {:else}
+                        <span class="text-sm">{blueprint.name}</span>
+                      {/if}
                       <h2 class="text-lg font-bold">{blueprint.name}</h2>
                       <hr class="py-1" />
                       <h3 class="font-semibold">Expenses</h3>
@@ -234,6 +248,12 @@
                       <h3 class="font-semibold">Revenue</h3>
                       <p class="text-sm text-green-500 font-semibold">
                         Price: ₹{convert_to_readable(BigInt(blueprint.price))}
+                      </p>
+                      <h3 class="font-semibold">Requirements</h3>
+                      <p class="text-sm font-semibold">
+                        Initial Investment: ₹{convert_to_readable(
+                          BigInt(blueprint.initialInvestment),
+                        )}
                       </p>
                     </div>
                   </div>
