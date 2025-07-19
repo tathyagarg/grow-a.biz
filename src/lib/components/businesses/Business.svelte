@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Icon from "@iconify/svelte";
+
   export let id: number;
   export let locked: boolean = false;
   export let name: string = "Empty";
@@ -49,7 +51,7 @@
       <div
         class="h-28 w-64 bg-text border-4 border-background text-background rounded-lg absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] font-bold text-2xl flex items-center justify-center cursor-not-allowed flex-col"
       >
-        Locked
+        <Icon icon="material-symbols:lock" />
         <p class="text-sm text-center">
           Reach {requirement}% market share* to unlock
         </p>

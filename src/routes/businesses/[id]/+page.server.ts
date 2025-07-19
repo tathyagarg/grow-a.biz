@@ -2,8 +2,9 @@ import { db } from '$lib/server/db';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getRequestEvent } from '$app/server';
+import type { PopulatedProduct } from '$lib/types/product';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ params }) => {
   const { locals } = getRequestEvent();
 
   if (!locals.user) {
@@ -16,20 +17,32 @@ export const load: PageServerLoad = async () => {
     where: (user, { eq }) => eq(user.id, userId),
   });
 
-  const businesses = await db.query.business.findMany({
-    where: (business, { eq }) => eq(business.userId, userId),
-    orderBy: (business, { desc }) => desc(business.createdAt),
-    columns: {
-      id: false,
-      userId: false,
-    }
+  const business = await db.query.business.findFirst({
+    where: (business, { eq, and }) => and(eq(business.userId, userId), eq(business.userBusinessId, Number(params.id))),
+  })
+
+  let products = await db.query.product.findMany({
+    where: (product, { eq }) => eq(product.businessId, business?.id || 0),
   });
+
+  let populatedProducts: PopulatedProduct[] = products.map(product => ({
+    ...product,
+    expenses: {
+      rawMaterialsCost: product.rawMaterialsCost,
+      laborCost: product.laborCost,
+      overheadCost: product.overheadCost,
+      marketingCost: product.marketingCost,
+      distributionCost: product.distributionCost,
+      totalCost: product.rawMaterialsCost + product.laborCost + product.overheadCost + product.marketingCost + product.distributionCost
+    }
+  }))
 
   return {
     user: {
       id: user_data?.id,
     },
-    businesses,
+    business,
+    products: populatedProducts
   };
 }
 

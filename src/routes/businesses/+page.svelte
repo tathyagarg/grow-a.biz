@@ -1,7 +1,6 @@
 <script lang="ts">
   import Business from "$lib/components/businesses/Business.svelte";
   import can_buy from "$lib/utils/business/can_buy";
-  import { enhance } from "$app/forms";
 
   let { data } = $props();
 
@@ -43,13 +42,6 @@
       <form
         class="flex flex-col justify-center h-full w-full gap-4 px-[16.67%]"
         method="POST"
-        use:enhance={async ({ formData }) => {
-          formData.set("business_id", businesses.length.toString());
-
-          return async ({}) => {
-            window.location.reload();
-          };
-        }}
       >
         <h2 class="text-2xl font-bold text-center">Create New Business</h2>
         <div class="">

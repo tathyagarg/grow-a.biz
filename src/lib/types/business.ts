@@ -2,6 +2,7 @@ export type BusinessSector = 'technology' | 'healthcare' | 'finance' | 'consumer
 
 export type BusinessData = {
   name: string;
+  userBusinessId: number;
   createdAt: Date;
   sector: BusinessSector;
   revenue: Array<{

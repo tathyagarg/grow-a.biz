@@ -12,10 +12,11 @@
   import type { EChartsOption } from "echarts";
 
   import { onMount, tick } from "svelte";
+  import { BarChart } from "echarts/charts";
 
   let options: EChartsOption = {};
 
-  use([TitleComponent, TooltipComponent, SVGRenderer, GraphicComponent]);
+  use([TitleComponent, TooltipComponent, SVGRenderer, BarChart]);
 
   const bar_height = 400;
 
@@ -42,87 +43,55 @@
 
     await tick();
 
-    const top_offset = 50;
-
-    const container = document.getElementById("emotion-parent");
-    const height = container?.clientHeight || 500;
-    const scale = height / (bar_height + top_offset);
-
     options = {
-      title: {
-        text: "NPC Emotions",
-        left: "center",
-        top: top_offset - 50,
-        textStyle: {
+      xAxis: {
+        type: "category",
+        data: npcData.map((npc) => npc.name),
+        axisLabel: {
           color: text,
-          fontSize: 40,
-          fontWeight: "bold",
+          fontSize: 14,
           fontFamily: "Space Grotesk",
         },
       },
-      graphic: {
-        elements: [
-          {
-            type: "group",
-            left: "center",
-            scaleX: scale,
-            scaleY: height / (bar_height + top_offset * 2.5),
-            children: npcData.flatMap(({ name, value }, i) => ({
-              type: "group",
-              left: 100 * i,
-              children: [
-                {
-                  type: "rect",
-                  shape: {
-                    x: -200 + 100 * i,
-                    y: top_offset,
-                    width: 50,
-                    height: bar_height,
-                  },
-                  style: {
-                    fill: text,
-                  },
-                },
-                {
-                  type: "rect",
-                  shape: {
-                    x: -200 + 100 * i,
-                    y: top_offset + (bar_height * (100 - value)) / 100,
-                    width: 50,
-                    height: (bar_height * value) / 100,
-                  },
-                  style: {
-                    fill: accent,
-                  },
-                },
-                {
-                  type: "text",
-                  style: {
-                    text: name, // `${value}%`,
-                    fill: text,
-                    fontSize: 20,
-                    textAlign: "center",
-                    fontFamily: "Space Grotesk",
-                  },
-                  x: -200 + 100 * i + 25,
-                  y: bar_height + top_offset + 10,
-                },
-                {
-                  type: "text",
-                  style: {
-                    text: `${value}%`,
-                    fill: value > 75 ? green : value < 25 ? red : yellow,
-                    fontSize: 20,
-                    textAlign: "center",
-                    fontFamily: "Space Grotesk",
-                  },
-                  x: -200 + 100 * i + 25,
-                  y: bar_height + top_offset + 35,
-                },
-              ],
-            })),
+      yAxis: {
+        type: "value",
+        axisLabel: {
+          color: text,
+          fontSize: 14,
+          fontFamily: "Space Grotesk",
+        },
+        max: 100,
+      },
+      series: [
+        {
+          data: npcData.map((npc) => npc.value),
+          type: "bar",
+          itemStyle: {
+            color: (params) => {
+              const data: number = (params.data as number) || 0;
+              return data > 75 ? green : data < 25 ? red : yellow;
+            },
           },
-        ],
+          showBackground: true,
+          backgroundStyle: {
+            color: text,
+          },
+          barWidth: "75%",
+        },
+      ],
+      tooltip: {
+        trigger: "item",
+        formatter: (params: any) => {
+          console.log(params);
+
+          const data = params.data as number;
+          return `${params.name}: ${data}%`;
+        },
+        textStyle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          fontFamily: "Space Grotesk",
+        },
       },
     };
   });

@@ -4,6 +4,7 @@ import type { PageServerLoad } from './$types';
 import { getRequestEvent } from '$app/server';
 import type { BusinessData, BusinessSector } from '$lib/types/business';
 import { business } from '$lib/server/db/schema';
+import canBuy from '$lib/utils/business/can_buy';
 
 export const load: PageServerLoad = async () => {
   const { locals } = getRequestEvent();
@@ -72,8 +73,6 @@ export const load: PageServerLoad = async () => {
     }
   }
 
-  console.dir(businessesWithData, { depth: null });
-
   return {
     user: {
       id: user_data?.id,
@@ -95,7 +94,66 @@ export const actions: Actions = {
     const name = formData.get('name')?.toString() || '';
     const sector = formData.get('sector')?.toString() || '';
 
-    const userBusinessId: number = (Number(formData.get('business_id')) || 0) + 1;
+    const businesses = await db.query.business.findMany({
+      where: (business, { eq }) => eq(business.userId, locals.user?.id || ''),
+      orderBy: (business, { desc }) => desc(business.userBusinessId),
+      columns: {
+        userId: false,
+      }
+    });
+
+    const businessesWithData: BusinessData[] = await Promise.all(businesses.map(async (business) => ({
+      ...business,
+      revenue: await db.query.business_historical_data.findMany({
+        where: (data, { eq, and }) => and(eq(data.type, 'revenue'), eq(data.businessId, business.id)),
+        orderBy: (data, { desc }) => desc(data.timestamp),
+        columns: {
+          id: false,
+          businessId: false,
+          type: false,
+        }
+      }),
+      sectorRevenue: null,
+    })));
+
+    let seen_sectors: Record<string, bigint> = {};
+
+    for (const business of businessesWithData) {
+      if (business.sector && !seen_sectors[business.sector]) {
+        const businessesInSector = await db.query.business.findMany({
+          where: (b, { eq }) => eq(b.sector, business.sector),
+          orderBy: (b, { desc }) => desc(b.createdAt),
+        });
+
+        let totalRevenue = 0n;
+
+        for (const business of businessesInSector) {
+          const revenueData = await db.query.business_historical_data.findFirst({
+            where: (data, { eq, and }) => and(eq(data.type, 'revenue'), eq(data.businessId, business.id)),
+            orderBy: (data, { desc }) => desc(data.timestamp),
+            columns: {
+              id: false,
+              businessId: false,
+              type: false,
+            }
+          });
+
+          totalRevenue += revenueData?.value ?? 0n;
+        }
+
+        seen_sectors[business.sector] = totalRevenue;
+        business.sectorRevenue = totalRevenue;
+      } else {
+        business.sectorRevenue = seen_sectors[business.sector] || null;
+      }
+    }
+
+
+    console.log("Businesses with data:", businessesWithData);
+    const userBusinessId = businesses.length + 1;
+    if (!canBuy(userBusinessId, businessesWithData).can_buy_this) {
+      return { error: 'You cannot buy more businesses at this time.' };
+    }
 
     formData.forEach((value, key) => {
       console.log(`Form Data - Key: ${key}, Value: ${value}`);

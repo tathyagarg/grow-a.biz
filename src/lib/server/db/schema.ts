@@ -139,7 +139,7 @@ export const product = pgTable('product', {
   marketingCost: integer('marketing_cost').notNull(),
   distributionCost: integer('distribution_cost').notNull(),
 
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 
   availableStock: integer('available_stock').notNull(), // quantity available for sale
 });
