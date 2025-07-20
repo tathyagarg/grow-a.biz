@@ -12,6 +12,9 @@
   import blueprints from "$lib/utils/blueprints";
 
   let { data, form } = $props();
+
+  console.log("data", data.competitorBusinesses[0].products);
+
   let { products, business, competitorBusinesses } = data;
 
   let productIndex = $state(products[0]?.id || -1);
@@ -29,9 +32,7 @@
   );
 </script>
 
-<div
-  class="h-[95vh] min-w-screen grid grid-cols-6 grid-rows-5 gap-4 p-4 *:rounded-md"
->
+<div class="h-full grid grid-cols-6 grid-rows-5 gap-4 *:rounded-md">
   <div
     class="col-start-1 col-span-2 row-start-1 row-span-1 border-2 border-secondary flex flex-col items-center gap-4 p-2"
   >
@@ -88,7 +89,7 @@
       />
       <a
         class="flex-1 col-start-4 row-start-3 cursor-pointer"
-        href={`/businesses/${business.userBusinessId}/products/${product.id}`}
+        href={`/businesses/${business.userBusinessId}/products/${product?.id || 0}`}
       >
         <Widget label="" value="Product Information" className="p-2" />
       </a>

@@ -20,3 +20,11 @@ export type PopulatedProduct = {
     totalCost: number; // sum of all costs
   };
 };
+
+export type ProductWithRevenue = PopulatedProduct & {
+  revenue: {
+    revenue: number;
+    quantitySold: number;
+    timestamp: Date;
+  }[];
+}

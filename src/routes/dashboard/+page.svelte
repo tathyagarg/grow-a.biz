@@ -137,7 +137,7 @@
 </script>
 
 <div
-  class="h-[95vh] min-w-screen grid grid-cols-5 grid-rows-5 gap-4 p-4 *:rounded-lg *:border-2 *:border-secondary"
+  class="h-full grid grid-cols-5 grid-rows-5 gap-4 *:rounded-lg *:border-2 *:border-secondary"
 >
   <div class="col-span-1 row-span-2 flex flex-col items-center justify-center">
     <NetWorth {netWorth} {liquidCash} {debt} {changePercent} />

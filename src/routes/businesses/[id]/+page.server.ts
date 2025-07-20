@@ -45,8 +45,87 @@ export const load: PageServerLoad = async ({ params }) => {
     products: await db.query.product.findMany({
       where: (product, { eq }) => eq(product.businessId, competitor.id),
       orderBy: (product, { desc }) => desc(product.createdAt),
-    })
+    }).then(async products => await Promise.all(products.map(async product => {
+      const expenses = await db.query.product_historical_data.findFirst({
+        where: (data, { eq }) => eq(data.productId, product.id),
+        orderBy: (data, { desc }) => desc(data.timestamp),
+        columns: {
+          rawMaterialsCost: true,
+          laborCost: true,
+          overheadCost: true,
+          marketingCost: true,
+          distributionCost: true,
+          price: true,
+          availableStock: true,
+        }
+      });
+
+      const rawMaterialsCost = expenses?.rawMaterialsCost || 0;
+      const laborCost = expenses?.laborCost || 0;
+      const overheadCost = expenses?.overheadCost || 0;
+      const marketingCost = expenses?.marketingCost || 0;
+      const distributionCost = expenses?.distributionCost || 0;
+      const totalCost = rawMaterialsCost + laborCost + overheadCost + marketingCost + distributionCost;
+      const availableStock = expenses?.availableStock || 0;
+      const price = expenses?.price || 0;
+
+      return {
+        ...product,
+        availableStock,
+        expenses: {
+          rawMaterialsCost,
+          laborCost,
+          overheadCost,
+          marketingCost,
+          distributionCost,
+          totalCost
+        },
+        price,
+      }
+    })))
   })));
+
+  // const populatedCompetitorBusinesses = await Promise.all(competitorBusinesses.map(async (competitor) => ({
+  //   ...competitor,
+  //   revenue: await db.query.business_historical_data.findFirst({
+  //     where: (data, { eq, and }) => and(eq(data.businessId, competitor.id), eq(data.type, 'revenue')),
+  //     orderBy: (data, { desc }) => desc(data.timestamp),
+  //   }),
+  //   products: await db.query.product.findMany({
+  //     where: (product, { eq }) => eq(product.businessId, competitor.id),
+  //     orderBy: (product, { desc }) => desc(product.createdAt),
+  //   }).then(products => products.map(product => {
+  //     return {
+  //       ...product,
+  //       expenses: db.query.product_historical_data.findFirst({
+  //         where: (data, { eq }) => eq(data.productId, product.id),
+  //         orderBy: (data, { desc }) => desc(data.timestamp),
+  //         columns: {
+  //           rawMaterialsCost: true,
+  //           laborCost: true,
+  //           overheadCost: true,
+  //           marketingCost: true,
+  //           distributionCost: true,
+  //           price: true,
+  //           availableStock: true,
+  //         }
+  //       }).then(data => ({
+  //         rawMaterialsCost: data?.rawMaterialsCost || 0,
+  //         laborCost: data?.laborCost || 0,
+  //         overheadCost: data?.overheadCost || 0,
+  //         marketingCost: data?.marketingCost || 0,
+  //         distributionCost: data?.distributionCost || 0,
+  //         totalCost: (data?.rawMaterialsCost || 0) +
+  //           (data?.laborCost || 0) +
+  //           (data?.overheadCost || 0) +
+  //           (data?.marketingCost || 0) +
+  //           (data?.distributionCost || 0),
+  //         availableStock: data?.availableStock || 0,
+  //         price: data?.price || 0
+  //       }))
+  //     }
+  //   })
+  // })));
 
   let products = await db.query.product.findMany({
     where: (product, { eq }) => eq(product.businessId, thisBusiness?.id || 0),

@@ -30,7 +30,9 @@
     <a href="/businesses">Businesses</a>
     <a href="/marketplace">Marketplace</a>
   </div>
-  {@render children()}
+  <div class="w-full h-[95vh] p-4">
+    {@render children()}
+  </div>
 </div>
 
 <style>

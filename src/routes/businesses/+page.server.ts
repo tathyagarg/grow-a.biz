@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { redirect, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { getRequestEvent } from '$app/server';
 import type { BusinessData, BusinessSector } from '$lib/types/business';
@@ -147,22 +147,37 @@ export const actions: Actions = {
     }
 
 
-    const userBusinessId = businesses.length + 1;
-    if (!canBuy(userBusinessId, businessesWithData).can_buy_this) {
-      return { error: 'You cannot buy more businesses at this time.' };
+    console.log("businessesWithData", businessesWithData);
+    console.log("revenue", businessesWithData.map(b => b.revenue));
+
+    const userBusinessId = businesses.length;
+    if (canBuy(userBusinessId, businessesWithData).can_buy_this === false) {
+      return fail(400, {
+        error: 'You cannot create more businesses at this time. Please delete an existing business or wait until you can create more.',
+      })
     }
 
+    console.log("userBusinessId", userBusinessId);
+
     if (!userBusinessId) {
-      return { error: 'Business ID is required.' };
+      return fail(400, {
+        error: 'User business ID is required.',
+      });
     }
 
     if (!name) {
-      return { error: 'Business name is required.' };
+      return fail(400, {
+        error: 'Business name is required.',
+      });
     }
 
     if (!sector || !['technology', 'healthcare', 'finance', 'consumer_discretionary', 'consumer_staples', 'energy', 'utilities', 'materials', 'industrials', 'real_estate', 'telecommunications', 'other'].includes(sector)) {
-      return { error: 'Invalid or missing business sector.' };
+      return fail(400, {
+        error: 'Invalid business sector. Please select a valid sector.',
+      });
     }
+
+    console.log("creating")
 
     const newBusiness = await db.insert(business).values({
       userId: locals.user.id,

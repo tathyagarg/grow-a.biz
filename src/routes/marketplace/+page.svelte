@@ -2,9 +2,7 @@
   import Icon from "@iconify/svelte";
 </script>
 
-<div
-  class="w-full h-[95vh] flex p-2 gap-2 *:rounded-md *:border-2 *:border-secondary"
->
+<div class="flex gap-2 *:rounded-md *:border-2 *:border-secondary">
   <div class="flex-[1] p-1">
     <!-- search bar -->
     <form method="POST" class="flex flex-row gap-2">

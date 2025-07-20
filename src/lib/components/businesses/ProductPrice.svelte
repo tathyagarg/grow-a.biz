@@ -81,8 +81,8 @@
           color: "var(--color-text)",
           fontSize: 14,
         },
-        min: minPrice * 0.95,
-        max: maxPrice + (maxPrice - minPrice) * 0.05,
+        min: 0,
+        max: maxPrice,
       },
       series: [
         {

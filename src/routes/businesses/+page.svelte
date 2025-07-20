@@ -22,7 +22,7 @@
   }
 </script>
 
-<div class="h-[95vh] min-w-full grid grid-cols-5">
+<div class="h-full grid grid-cols-5">
   {#each Array.from({ length: 5 }) as _, i}
     <Business
       id={businesses[i]?.userBusinessId || i}
